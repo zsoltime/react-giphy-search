@@ -61,3 +61,16 @@ body {
   object-fit: cover;
   width: 100%;
 }
+
+.message {
+  margin: 1rem auto;
+  max-width: 420px;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.message--error {
+  background: #d32f2f;
+  color: rgba(255, 255, 255, 0.8);
+}

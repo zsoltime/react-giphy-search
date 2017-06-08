@@ -6,6 +6,23 @@ const createURL = (url, params) => {
   return `${url}?${query}`;
 }
 
+const handleFetchErrors = (res) => {
+  if (!res.ok) {
+    throw Error(res.statusText);
+  }
+  return res;
+}
+
+const ErrorMessage = ({ message }) => (
+  <div className="message message--error">
+    Error: {message}
+  </div>
+);
+
+ErrorMessage.propTypes = {
+  message: React.PropTypes.string.isRequired,
+};
+
 const Image = (props) => {
   if (!props.src) {
     return (<div />)
@@ -29,7 +46,6 @@ Image.propTypes = {
 };
 
 const Images = (props) => {
-  console.log(props.images);
   let imageList;
 
   if (props.images.length === 0) {
@@ -96,6 +112,7 @@ class App extends React.Component {
       pageSize: 10,
       activePage: 0,
       isLoaded: [],
+      error: null,
     };
     this.handleChange = this.handleChange.bind(this);
     this.fetchImages = this.fetchImages.bind(this);
@@ -115,14 +132,20 @@ class App extends React.Component {
     };
 
     fetch(createURL(url, settings))
+    .then(handleFetchErrors)
     .then(res => res.json())
     .then((res) => {
       this.setState({
         images: res.data,
         total: res.pagination.count,
+        error: null,
       });
     })
-    .catch(err => console.error(err));
+    .catch((err) => {
+      this.setState({
+        error: err.message,
+      });
+    });
   }
   fetchTrendingImages() {
     const url = 'http://api.giphy.com/v1/gifs/trending';
@@ -131,14 +154,20 @@ class App extends React.Component {
       limit: this.state.pageSize,
     };
     fetch(createURL(url, settings))
+    .then(handleFetchErrors)
     .then(res => res.json())
     .then((res) => {
       this.setState({
         images: res.data,
         total: res.pagination.count,
+        error: null,
       });
     })
-    .catch(err => console.error(err));
+    .catch((err) => {
+      this.setState({
+        error: err.message,
+      });
+    });
   }
   handleChange(event) {
     clearTimeout(this.state.timeoutId);
@@ -151,13 +180,17 @@ class App extends React.Component {
     });
   }
   render() {
+    const images = (this.state.error
+      ? <ErrorMessage message={this.state.error} />
+      : <Images images={this.state.images} />);
+
     return (
       <div className="container">
         <header className="page-header">
           <h1 className="page-title">Giphy API</h1>
         </header>
         <SearchForm handleChange={this.handleChange} />
-        <Images images={this.state.images} />
+        {images}
       </div>
     );
   }
