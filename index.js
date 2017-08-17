@@ -122,7 +122,7 @@ class App extends React.Component {
   }
   componentDidUpdate() {}
   fetchImages(query) {
-    const url = 'http://api.giphy.com/v1/gifs/search';
+    const url = '//api.giphy.com/v1/gifs/search';
     const settings = {
       q: query,
       api_key: 'dc6zaTOxFJmzC',
@@ -148,7 +148,7 @@ class App extends React.Component {
     });
   }
   fetchTrendingImages() {
-    const url = 'http://api.giphy.com/v1/gifs/trending';
+    const url = '//api.giphy.com/v1/gifs/trending';
     const settings = {
       api_key: 'dc6zaTOxFJmzC',
       limit: this.state.pageSize,
